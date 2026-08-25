@@ -4,7 +4,7 @@ function SpiderIcon({ dead }: { dead?: boolean }) {
   return (
     <svg
       viewBox="0 0 24 24"
-      className={`h-6 w-6 transition-all duration-300 ${dead ? 'scale-90 opacity-20 grayscale' : 'drop-shadow-[0_2px_0_rgba(0,0,0,0.5)]'}`}
+      className={`h-5 w-5 sm:h-6 sm:w-6 transition-all duration-300 ${dead ? 'scale-90 opacity-20 grayscale' : 'drop-shadow-[0_2px_0_rgba(0,0,0,0.5)]'}`}
     >
       <g stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" fill="none">
         <path d="M8.6 9.6 L4.2 5.8 M8 12 L2.8 11.6 M8.6 14.4 L4.2 18.2 M15.4 9.6 L19.8 5.8 M16 12 L21.2 11.6 M15.4 14.4 L19.8 18.2 M10.2 8.4 L8.4 3.6 M13.8 8.4 L15.6 3.6" />
@@ -45,13 +45,13 @@ export default function Hud({ hud, show, onMute }: Props) {
   return (
     <div className="pointer-events-none absolute inset-0 z-10 select-none">
       {/* score + distance */}
-      <div className="comic-panel absolute left-3 top-3 -rotate-1 px-4 py-2.5">
+      <div className="comic-panel absolute left-2 top-2 -rotate-1 px-3 py-2 sm:left-3 sm:top-3 sm:px-4 sm:py-2.5">
         <div className="font-body text-[10px] font-bold tracking-[0.3em] text-[#ff9ab0]">SCORE</div>
-        <div className="font-display text-[2.6rem] leading-none text-[#ffd23f]">
+        <div className="font-display text-3xl leading-none text-[#ffd23f] sm:text-[2.6rem]">
           {hud.score.toLocaleString()}
         </div>
         <div className="mt-1.5 flex items-center gap-2.5">
-          <div className="h-3 w-36 -skew-x-12 overflow-hidden border-2 border-[#0b0618] bg-[#12081f] sm:w-44">
+          <div className="h-3 w-28 -skew-x-12 overflow-hidden border-2 border-[#0b0618] bg-[#12081f] sm:w-44">
             <div
               className="h-full bg-gradient-to-r from-[#e62429] via-[#ff7a3c] to-[#ffd23f] transition-[width] duration-200"
               style={{ width: `${pct}%` }}
@@ -66,7 +66,7 @@ export default function Hud({ hud, show, onMute }: Props) {
       </div>
 
       {/* lives + tokens */}
-      <div className="comic-panel absolute right-3 top-3 rotate-1 flex items-center gap-3 px-4 py-2.5">
+      <div className="comic-panel absolute right-2 top-2 rotate-1 flex items-center gap-2.5 px-3 py-2 sm:right-3 sm:top-3 sm:gap-3 sm:px-4 sm:py-2.5">
         <div className="flex items-center gap-1 text-[#ff4b47]">
           {[0, 1, 2].map((i) => (
             <SpiderIcon key={i} dead={i >= hud.lives} />
@@ -85,8 +85,8 @@ export default function Hud({ hud, show, onMute }: Props) {
           key={hud.combo}
           className="anim-style absolute left-1/2 top-20 flex -translate-x-1/2 items-center gap-2"
         >
-          <div className="comic-panel -rotate-2 border-[#ffd23f] px-4 py-1.5">
-            <span className="font-display text-2xl leading-none text-[#ffd23f]">STYLE {multLabel}</span>
+          <div className="comic-panel -rotate-2 border-[#ffd23f] px-3 py-1.5 sm:px-4">
+            <span className="font-display text-xl leading-none text-[#ffd23f] sm:text-2xl">STYLE {multLabel}</span>
             <span className="ml-2 font-body text-[10px] font-bold tracking-[0.2em] text-[#ff9ab0]">
               {hud.combo} CHAIN
             </span>
@@ -95,7 +95,14 @@ export default function Hud({ hud, show, onMute }: Props) {
       )}
 
       {/* controls hint */}
-      <div className="absolute bottom-3 left-3 hidden items-center gap-2 sm:flex">
+      <div className="absolute bottom-3 left-1/2 -translate-x-1/2 md:hidden">
+        <div className="comic-panel px-3 py-1.5">
+          <span className="font-body text-[10px] font-bold tracking-[0.18em] text-[#cfc3f2]/90">
+            HOLD = WEB · SIDES = STEER
+          </span>
+        </div>
+      </div>
+      <div className="absolute bottom-3 left-3 hidden items-center gap-2 md:flex">
         <div className="flex items-center gap-1.5">
           <span className="keycap">HOLD</span>
           <span className="font-body text-xs font-semibold text-[#cfc3f2]/90">web</span>

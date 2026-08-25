@@ -83,8 +83,8 @@ export function MenuScreen({ best, onStart }: { best: number; onStart: () => voi
             <span className="font-display text-sm tracking-widest text-white">ISSUE #01 — THE NEON DISTRICT</span>
           </div>
           <h1 className="font-display title-shadow leading-[0.86]">
-            <span className="block text-7xl text-[#f4efff] sm:text-8xl">WEB</span>
-            <span className="block text-8xl text-[#ffd23f] sm:text-9xl">SWINGER</span>
+            <span className="block text-6xl text-[#f4efff] sm:text-8xl">WEB</span>
+            <span className="block text-7xl text-[#ffd23f] sm:text-9xl">SWINGER</span>
           </h1>
           <p className="mt-4 max-w-md font-body text-sm font-medium leading-relaxed text-[#cfc3f2]">
             The city never sleeps and neither do you. Fire webs, swing the gaps, chain
@@ -95,6 +95,7 @@ export function MenuScreen({ best, onStart }: { best: number; onStart: () => voi
             <ControlRow keys={['HOLD SPACE', 'CLICK']} label="Fire a web & swing" />
             <ControlRow keys={['RELEASE']} label="Let go mid-swing to launch" />
             <ControlRow keys={['A', 'D']} label="Steer in the air" />
+            <ControlRow keys={['TOUCH']} label="Hold anywhere = web · left/right side steers" />
           </div>
         </div>
 

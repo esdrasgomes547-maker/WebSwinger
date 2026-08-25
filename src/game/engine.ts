@@ -121,13 +121,16 @@ export class WebGame {
   private held = false;
   private steer = 0;
   private keys = new Set<string>();
+  private touchId: number | null = null;
+  private steerTouch = 0;
 
   private onKeyDown: (e: KeyboardEvent) => void;
   private onKeyUp: (e: KeyboardEvent) => void;
   private onVis: () => void;
   private onResize: () => void;
   private ptrDown: (e: PointerEvent) => void;
-  private ptrUp: () => void;
+  private ptrUp: (e: PointerEvent) => void;
+  private ptrMove: (e: PointerEvent) => void;
 
   constructor(
     cv: HTMLCanvasElement,
@@ -162,8 +165,13 @@ export class WebGame {
       if (c === 'ArrowLeft' || c === 'KeyA') this.keys.delete('L');
       if (c === 'ArrowRight' || c === 'KeyD') this.keys.delete('R');
     };
-    this.ptrDown = () => this.setHeld(true);
-    this.ptrUp = () => this.setHeld(false);
+    this.ptrDown = (e) => {
+      e.preventDefault();
+      this.trackTouch(e, true);
+      this.setHeld(true);
+    };
+    this.ptrUp = (e) => { this.endTouch(e); this.setHeld(false); };
+    this.ptrMove = (e) => { if (e.pointerId === this.touchId) this.trackTouch(e, false); };
 
     window.addEventListener('resize', this.onResize);
     document.addEventListener('visibilitychange', this.onVis);
@@ -172,6 +180,7 @@ export class WebGame {
     cv.addEventListener('pointerdown', this.ptrDown);
     window.addEventListener('pointerup', this.ptrUp);
     window.addEventListener('pointercancel', this.ptrUp);
+    window.addEventListener('pointermove', this.ptrMove);
     cv.addEventListener('contextmenu', (e) => e.preventDefault());
 
     if (document.fonts && document.fonts.load) {
@@ -192,6 +201,19 @@ export class WebGame {
     this.cv.removeEventListener('pointerdown', this.ptrDown);
     window.removeEventListener('pointerup', this.ptrUp);
     window.removeEventListener('pointercancel', this.ptrUp);
+    window.removeEventListener('pointermove', this.ptrMove);
+  }
+
+  /* touch steering: left/right half of the screen */
+  private trackTouch(e: PointerEvent, down: boolean) {
+    if (e.pointerType === 'mouse') return;
+    if (down) this.touchId = e.pointerId;
+    if (e.pointerId !== this.touchId) return;
+    const rect = this.cv.getBoundingClientRect();
+    this.steerTouch = (e.clientX - rect.left) < rect.width * 0.5 ? -1 : 1;
+  }
+  private endTouch(e: PointerEvent) {
+    if (e.pointerId === this.touchId) { this.touchId = null; this.steerTouch = 0; }
   }
 
   /* ---------------- public controls ---------------- */
@@ -266,6 +288,7 @@ export class WebGame {
     this.px = START_X; this.py = first.roofY - 14;
     this.vx = 0; this.vy = 0;
     this.onGround = true; this.web = null; this.invuln = 0; this.face = 1;
+    this.touchId = null; this.steerTouch = 0; this.held = false;
     this.deadT = 0;
     this.camX = this.px - this.W * 0.35;
     this.camY = this.py - 720 * 0.46;
@@ -373,7 +396,9 @@ export class WebGame {
     }
 
     this.playT += dt;
-    this.steer = (this.keys.has('R') ? 1 : 0) - (this.keys.has('L') ? 1 : 0);
+    this.steer = clamp(
+      (this.keys.has('R') ? 1 : 0) - (this.keys.has('L') ? 1 : 0) + this.steerTouch, -1, 1,
+    );
     if (this.vx < -1) this.face = -1; else if (this.vx > 1) this.face = 1;
     if (this.deadT <= 0) this.updatePlayer(dt);
     else this.deadT -= dt;
